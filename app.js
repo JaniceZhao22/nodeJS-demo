@@ -1,14 +1,34 @@
 // 创建express
-var express = reuqire("express");
+var express = require("express");
+var mongoose = require("mongoose");
+var session = require("express-session");
+
+var adminCtrl = require('./controller/adminCtrl.js');
+// 创建app
 var app = express();
 
+// 链接数据库 /electiveCourse 为数据库的名字
+mongoose.connect("mongodb://localhost/electiveCourse")
+
+// 使用session
+app.use(session({
+    secret: 'kaola',
+    cookie: {maxAge: 60000},
+    resave: false,
+    saveUninitialized: true
+}))
+
+
 // 模版引擎
-app.set("view engine", 'ejs');
+app.set('view engine', 'ejs');
 
 // 中间件， 路由清单
-app.get("/", function(req, res){
-    res.send("")
-})
+app.get("/", adminCtrl.showAdminDashbord);
+app.get("/admin", adminCtrl.showAdminDashbord);
+app.get("/admin/student", adminCtrl.showAdminStudent);
+app.get("/admin/course", adminCtrl.showAdminStudent);
+app.get("/admin/report", adminCtrl.showAdminStudent);
+
 
 // 静态资源
 app.use(express.static("public"))
@@ -17,3 +37,6 @@ app.use(express.static("public"))
 app.use(function(req, res){
     res.send("页面不存在");
 })
+
+app.listen(3000);
+console.log("start run at port 3000");
