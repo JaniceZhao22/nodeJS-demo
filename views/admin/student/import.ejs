@@ -52,19 +52,33 @@
   </head>
   <body>
     
-    <%- include('components/header') %>
+    <%- include('../components/header') %>
 
 <div class="container-fluid">
   <div class="row">
    
-    <%- include('components/nav') %>
+    <%- include('../components/nav') %>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-     <div>
+     <div style="margin-bottom: 20px">
          <a href="">学生清单</a>
-         <a href="/admin/students/import">导入学生</a>
+         <a href="">导入学生</a>
          <a href="">生成学生密码</a>
      </div>
-
+     <div>
+        <p >  请导入excel 表格</p>
+        <p>形式必须是每一个年纪一张表, 每列依次是学号、姓名、性别</p>
+        <div>
+          <form id="fileForm"
+                action="/admin/students/import" 
+                method="post" 
+                enctype="multipart/form-data" 
+          >
+            <p> <input type="file" name="studenFile"> </p> 
+            <p><input type="submit" value="上传" class="btn-success"> </p>
+          </form>
+           
+        </div>
+     </div>
     </main>
   </div>
 </div>
@@ -73,5 +87,23 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+
+        <script> 
+          $("#fileForm").on("submit", function() {
+             if(!confirm("请注意 上传表格 会重值数据库")) {
+               return false; //  阻止表单的上传
+             }
+          })
+        
+        </script>
   </body>
+
+  <script>
+    /*
+     上传form 需要注意两点：
+     1、file 控件必须要有name属性
+     2、<form> 标签上面必须有：
+     <form action="/upload" enctype="mulipart/form-data"></form>
+    */
+  </script>
 </html>

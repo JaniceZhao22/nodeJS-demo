@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "formidable": "^1.2.2",
-    "mongoose": "^5.13.2"
+    "mongoose": "^5.13.2",
+    "node-xlsx": "^0.17.1"
   }
 }
