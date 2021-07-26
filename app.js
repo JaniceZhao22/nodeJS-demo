@@ -22,14 +22,19 @@ app.use(session({
 // 模版引擎
 app.set('view engine', 'ejs');
 
-// 中间件， 路由清单
+// 中间件， 路由清单 都是页面
 app.get("/", adminCtrl.showAdminDashbord);
 app.get("/admin", adminCtrl.showAdminDashbord);
 app.get("/admin/student", adminCtrl.showAdminStudent);
 app.get("/admin/students/import", adminCtrl.adminImportStudent);
 app.post("/admin/students/import", adminCtrl.doImportStudent);
 app.get("/admin/course", adminCtrl.showAdminStudent);
-app.get("/admin/report", adminCtrl.showAdminStudent);
+app.get("/admin/report", adminCtrl.showAdminStudent); 
+
+
+
+//ajax接口
+app.get("/studentsList", adminCtrl.getAllStudents); 
 
 
 // 静态资源

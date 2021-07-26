@@ -56,3 +56,10 @@ exports.doImportStudent = function(req, res) {
         res.send("上传成功");
     })
 }
+
+// ajax 请求数据列表
+exports.getAllStudents = function(req, res) {
+    Student.find({}, function(err, resultes){
+        res.json({"data": resultes});
+    })
+}

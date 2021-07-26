@@ -4,8 +4,9 @@ var mongoose = require("mongoose");
 var studentSchema = new mongoose.Schema({
     "sid": Number,
     "name": String,
-    "grade": Number
-})
+    "grade": String,
+});
+var gradeArr = ['初一','初二','初三','高一','高一','高一',]
 
 studentSchema.statics.importStudent = function(workSheets) {
     var sheetsLength = workSheets.length;
@@ -17,7 +18,7 @@ studentSchema.statics.importStudent = function(workSheets) {
                 var s = new Student({
                     "sid": workSheets[i].data[j][0],
                     "name": workSheets[i].data[j][1],
-                    "grade": i +1,
+                    "grade": gradeArr[i],
                 })
                 s.save();
             }
