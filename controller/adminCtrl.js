@@ -1,5 +1,6 @@
 var formidable =  require("formidable");
 var path = require("path");
+var querystring = require('querystring');//这个模块是请求丶数据转换为字符串形式
 var fs = require("fs");
 var xlsx = require("node-xlsx");
 var Student = require("../models/student.js")
@@ -57,9 +58,21 @@ exports.doImportStudent = function(req, res) {
     })
 }
 
-// ajax 请求数据列表
+// ajax 请求数据列表； 加上分页的功能
 exports.getAllStudents = function(req, res) {
-    Student.find({}, function(err, resultes){
-        res.json({"data": resultes});
+    let postData='';
+    req.on('data',(chunk,)=>{//意思为绑定一个data事件，这个为事件体
+        //   将数据累加到容器里，// 这个事件里面就把这些小块的数据拼接起来
+           postData+=chunk;
+    });
+    // 3.给req对象一个end事件(这个事件只会执行一 -次)
+    req.on('end',()=>{
+        console.log(1, postData)
+        //4利用解析这个传递过来的参数数据，形成一个对象
+        let postObj=querystring.parse(postData);
+        console.log(2, postObj);
     })
+    // Student.find({}).limit(), function(err, resultes){
+    //     res.json({"data": resultes});
+    // })
 }
