@@ -67,6 +67,11 @@
          <a href="/admin/students/import">导入学生</a>
      </div>
      <div>
+       <div>
+          <span >搜索姓名：</span>
+          <input type="text" placeholder="请输入姓名" class="search-input">
+          <button id="btn">确定</button>
+       </div>
        <div >
         <table id="list"></table> 
         <div id="page1"></div>
@@ -114,25 +119,37 @@
 
     });
   }
+
+  function initData(name = '') {
+    var params = {
+      pageIndex: 0,
+      pagelimit: 50,
+      name,   // 空是查询全部
+    };
+    // ajax请求数据
+    $.ajax({
+      type: 'POST',
+      url:"/studentsList",
+      data: params,
+      success:function(result){
+        console.log(999, result);
+        if(!result.data) return;
+        var data = result.data;
+        init() ;
+        for(let i = 0; i <= data.length; i++) {
+          jQuery("#list").jqGrid('addRowData', i+1, data[i]);
+        }
+    }});
+  }
+  // 初始化获取全部数据
+  initData();
   
-  var params = {
-    pageIndex: 0,
-    pagelimit: 50,
-  };
-  // ajax请求数据
-  $.ajax({
-    type: 'POST',
-    url:"/studentsList",
-    data: params,
-    success:function(result){
-      console.log(999, result);
-      if(!result.data) return;
-      var data = result.data;
-      init() ;
-      for(let i = 0; i <= data.length; i++) {
-        jQuery("#list").jqGrid('addRowData', i+1, data[i]);
-      }
-  }});
+
+  // 点击进行模糊查询
+  document.querySelector('#btn').addEventListener("click", function() {
+    const searchval = document.querySelector('.search-input').value;
+    initData(searchval);
+  })
 </script>
   </body>
 </html>

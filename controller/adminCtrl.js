@@ -72,9 +72,20 @@ exports.getAllStudents = function(req, res) {
         let postObj=querystring.parse(postData);
         var pageIndex = postObj.pageIndex ;
         var pageLimit = postObj.pagelimit - 0; // 传过来的是字符串，需要转一下 number
-        // 分页功能
+        var searhKeyWord = postObj.name;
+        
+        // 模糊匹配查询
+        var regexp = new RegExp(searhKeyWord, "g");
+        var findObj = {};
+        if(searhKeyWord !== '') { // 传的为空， 就返回全部
+            findObj = {
+                'name': regexp
+            };
+        }
+
+        // skip 与 limit 是分页功能
         Student.count({}, function(err, count){ // count是总total number
-            Student.find({}, null, {sord: [["sid", 1]]}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
+            Student.find(findObj, null, {sord: [["sid", 1]]}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
                 res.json({"data": resultes, count});
             });
         })
