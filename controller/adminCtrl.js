@@ -3,7 +3,8 @@ var path = require("path");
 var querystring = require('querystring');//这个模块是请求丶数据转换为字符串形式
 var fs = require("fs");
 var xlsx = require("node-xlsx");
-var Student = require("../models/student.js")
+var Student = require("../models/student.js");
+const { count } = require("../models/student.js");
 
 exports.showAdminDashbord = function(req, res) {
     res.render("admin/index", {
@@ -67,12 +68,20 @@ exports.getAllStudents = function(req, res) {
     });
     // 3.给req对象一个end事件(这个事件只会执行一 -次)
     req.on('end',()=>{
-        console.log(1, postData)
         //4利用解析这个传递过来的参数数据，形成一个对象
         let postObj=querystring.parse(postData);
-        console.log(2, postObj);
+        var pageIndex = postObj.pageIndex ;
+        var pageLimit = postObj.pagelimit - 0; // 传过来的是字符串，需要转一下 number
+        // 分页功能
+        Student.count({}, function(err, count){ // count是总total number
+            Student.find({}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
+                res.json({"data": resultes, count});
+            });
+        })
+        
+        // 这是返回全部的数据
+        // Student.find({}, function(err, resultes){
+        //     res.json({"data": resultes});
+        // })
     })
-    // Student.find({}).limit(), function(err, resultes){
-    //     res.json({"data": resultes});
-    // })
 }

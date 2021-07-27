@@ -121,11 +121,12 @@
     data: params,
     success:function(result){
       console.log(999, result);
-      // var data = result.data;
-      // init() ;
-      // for(let i = 0; i <= data.length; i++) {
-      //   jQuery("#list").jqGrid('addRowData', i+1, data[i]);
-      // }
+      if(!result.data) return;
+      var data = result.data;
+      init() ;
+      for(let i = 0; i <= data.length; i++) {
+        jQuery("#list").jqGrid('addRowData', i+1, data[i]);
+      }
   }});
 </script>
   </body>
