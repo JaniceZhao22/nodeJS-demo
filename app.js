@@ -28,6 +28,7 @@ app.get("/admin", adminCtrl.showAdminDashbord);
 app.get("/admin/student", adminCtrl.showAdminStudent);
 app.get("/admin/students/import", adminCtrl.adminImportStudent);
 app.post("/admin/students/import", adminCtrl.doImportStudent);
+app.get("/admin/students/add", adminCtrl.showAdminStudentsAdd);
 app.get("/admin/course", adminCtrl.showAdminStudent);
 app.get("/admin/report", adminCtrl.showAdminStudent); 
 
@@ -36,6 +37,7 @@ app.get("/admin/report", adminCtrl.showAdminStudent);
 //ajax接口
 app.post("/studentsList", adminCtrl.getAllStudents); 
 app.post("/students/:sid", adminCtrl.updateStudents);
+app.post("/student/add", adminCtrl.addStudents);
 
 
 // 静态资源

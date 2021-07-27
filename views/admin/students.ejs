@@ -63,13 +63,14 @@
     <%- include('components/nav') %>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
      <div>
-         <a href="/admin/student">学生清单</a>
+         <a href="/admin/student" style="font-weight: 900; font-size: 20px;">学生清单</a>
          <a href="/admin/students/import">导入学生</a>
+         <a href="/admin/students/add">增加学生</a>
      </div>
      <div>
-       <div>
-          <span >搜索姓名：</span>
-          <input type="text" placeholder="请输入姓名" class="search-input">
+       <div style="margin: 20px 0">
+          <span >快捷查询：</span>
+          <input type="text" placeholder="请输入" class="search-input" autofocus>
           <button id="btn">确定</button>
        </div>
        <div >
@@ -88,6 +89,7 @@
   crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
 <script type="text/javascript" src="/sources/jquery.jqGrid.src.js"></script>
+
 <script>
   function init() {
     jQuery("#list").jqGrid({
@@ -136,10 +138,11 @@
         if(!result.data) return;
         var data = result.data;
         init() ;
+        // todo:  需要加一个清空的命令
         for(let i = 0; i <= data.length; i++) {
           jQuery("#list").jqGrid('addRowData', i+1, data[i]);
         }
-    }});
+    }}); 
   }
   // 初始化获取全部数据
   initData();
@@ -151,5 +154,5 @@
     initData(searchval);
   })
 </script>
-  </body>
+</body>
 </html>

@@ -5,6 +5,8 @@ var studentSchema = new mongoose.Schema({
     "sid": Number,
     "name": String,
     "grade": String,
+    "password": String,
+    "changedPassword": { type: Boolean, default: false }
 });
 var gradeArr = ['初一','初二','初三','高一','高一','高一',]
 
@@ -19,6 +21,7 @@ studentSchema.statics.importStudent = function(workSheets) {
                     "sid": workSheets[i].data[j][0],
                     "name": workSheets[i].data[j][1],
                     "grade": gradeArr[i],
+                    "password": 0000000, // 初始密码都设为0
                 })
                 s.save();
             }

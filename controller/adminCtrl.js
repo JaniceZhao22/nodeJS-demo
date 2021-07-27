@@ -21,6 +21,10 @@ exports.showAdminStudent = function(req, res) {
 exports.adminImportStudent = function(req, res) {
     res.render("admin/student/import")
 }
+
+exports.showAdminStudentsAdd = function(req, res) {
+    res.render('admin/student/add')
+}
 // 表格上传的同步接口
 exports.doImportStudent = function(req, res) {
     var form = new formidable.IncomingForm();
@@ -77,14 +81,17 @@ exports.getAllStudents = function(req, res) {
         // 模糊匹配查询
         var regexp = new RegExp(searhKeyWord, "g");
         var findObj = {};
-        if(searhKeyWord !== '') { // 传的为空， 就返回全部
+        if(searhKeyWord && searhKeyWord !== '') { // 传的为空， 就返回全部
             findObj = {
-                'name': regexp
+                $or: [
+                    {'name': regexp},
+                    {'grade': regexp},
+                ]
             };
         }
 
         // skip 与 limit 是分页功能
-        Student.count({}, function(err, count){ // count是总total number
+        Student.count(findObj, function(err, count){ // count是总total number
             Student.find(findObj, null, {sord: [["sid", 1]]}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
                 res.json({"data": resultes, count});
             });
@@ -129,4 +136,25 @@ exports.updateStudents = function(req, res) {
         })
     });
 
+}
+
+// 增加一个学生数据
+exports.addStudents = function(req, res) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        var sid = fields.sid;
+        var name = fields.name;
+        var grade = fields.grade;
+        var password = fields.password;
+
+        var S = new Student({
+            sid,
+            name,
+            grade,
+            password,
+        });
+        S.save();
+
+        
+    });
 }
