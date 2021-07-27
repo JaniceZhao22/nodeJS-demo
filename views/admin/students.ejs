@@ -91,7 +91,7 @@
       colNames : ['学号', '姓名', '年级', '初始密码(点击可更改)'],
       colModel : [ 
           {name: 'sid', index: 'sid', width: 55, key: true},
-          {name: 'name', index: 'name', width: 89},
+          {name: 'name', index: 'name', width: 89, editable: true},
           {name: 'grade', index: 'grade', width: 100},
           {name: 'password', index: 'password', width: 100, editable: true},
       ],
@@ -103,16 +103,21 @@
       cellEdit: true,
       cellsubmit: 'clientArray', 
       afterSaveCell: function(rowid, cellname, value, iRow, icol) {
-          var id = $("#list").getCell(iRow, 0);
-          console.log(id, cellname, value)
+          console.log(rowid, cellname, value);
+          $.post("/students/" + rowid, {
+            cellname,
+            value
+          }, function(data) {
+            console.log(99999, data);
+          })
       }
 
     });
   }
   
   var params = {
-    pageIndex: 1,
-    pagelimit: 5,
+    pageIndex: 0,
+    pagelimit: 50,
   };
   // ajax请求数据
   $.ajax({

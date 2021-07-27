@@ -35,6 +35,7 @@ app.get("/admin/report", adminCtrl.showAdminStudent);
 
 //ajax接口
 app.post("/studentsList", adminCtrl.getAllStudents); 
+app.post("/students/:sid", adminCtrl.updateStudents);
 
 
 // 静态资源

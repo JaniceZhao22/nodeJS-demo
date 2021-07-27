@@ -74,7 +74,7 @@ exports.getAllStudents = function(req, res) {
         var pageLimit = postObj.pagelimit - 0; // 传过来的是字符串，需要转一下 number
         // 分页功能
         Student.count({}, function(err, count){ // count是总total number
-            Student.find({}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
+            Student.find({}, null, {sord: [["sid", 1]]}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
                 res.json({"data": resultes, count});
             });
         })
@@ -84,4 +84,38 @@ exports.getAllStudents = function(req, res) {
         //     res.json({"data": resultes});
         // })
     })
+}
+
+
+
+// 修改某一个学生
+exports.updateStudents = function(req, res) {
+    var sid  = parseInt(req.params.sid);
+    // 查询
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        var key = fields.cellname;
+        var value = fields.value;
+
+        Student.find({'sid': sid}, function(err, results) {
+            if (err) {
+                res.send({cood: -2006, msg: err});
+                return;
+            }
+            if(results.length != 1) {
+                res.send({cood: -2005, msg: 'id错误 查不到'});
+                return;
+            }
+            var theStudent = results[0];
+            theStudent[key] = value;
+            theStudent.save(function(err) {
+                if(err) {
+                    res.send({cood: -2006, msg: err});
+                    return;
+                }
+                res.send({cood: 200, msg: 'success'});
+            });
+        })
+    });
+
 }
