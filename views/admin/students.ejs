@@ -76,6 +76,8 @@
        <div >
         <table id="list"></table> 
         <div id="page1"></div>
+
+        <div>  <button id="delBtn">删除</button></div>
        </div>
     </div>
     </main>
@@ -110,7 +112,8 @@
       cellEdit: true,
       cellsubmit: 'clientArray', 
       afterSaveCell: function(rowid, cellname, value, iRow, icol) {
-          console.log(rowid, cellname, value);
+          console.log(iRow,icol, cellname, value);
+          // 现在拿到的是 index，不是sid，待fix bug TODO
           $.post("/students/" + rowid, {
             cellname,
             value
@@ -138,7 +141,8 @@
         if(!result.data) return;
         var data = result.data;
         init() ;
-        // todo:  需要加一个清空的命令
+        // 先清空再添加
+        $("#list").jqGrid("clearGridData");
         for(let i = 0; i <= data.length; i++) {
           jQuery("#list").jqGrid('addRowData', i+1, data[i]);
         }
@@ -152,6 +156,26 @@
   document.querySelector('#btn').addEventListener("click", function() {
     const searchval = document.querySelector('.search-input').value;
     initData(searchval);
+  })
+
+
+  // 点击进行删除
+  document.querySelector('#delBtn').addEventListener("click", function() {
+    // 现在拿到的是 index，不是sid，待fix bug TODO
+    
+    const selectArr = $('#list').jqGrid('getGridParam', 'selarrrow');
+     // ajax请求数据
+     $.ajax({
+      type: 'delete',
+      url:"/student",
+      dataType: 'json',
+      traditional: true,
+      data: {"arr": selectArr},
+      success:function(result){
+        console.log(3333, result);
+        initData();
+    }}); 
+    
   })
 </script>
 </body>

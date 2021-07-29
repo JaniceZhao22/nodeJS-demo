@@ -92,6 +92,10 @@ exports.getAllStudents = function(req, res) {
 
         // skip 与 limit 是分页功能
         Student.count(findObj, function(err, count){ // count是总total number
+            if(err) {
+                res.send({cood: -2006, msg: err});
+                return;
+            }
             Student.find(findObj, null, {sord: [["sid", 1]]}).skip(pageLimit*pageIndex).limit(pageLimit).exec(function(err, resultes){
                 res.json({"data": resultes, count});
             });
@@ -135,7 +139,6 @@ exports.updateStudents = function(req, res) {
             });
         })
     });
-
 }
 
 // 增加一个学生数据
@@ -147,14 +150,65 @@ exports.addStudents = function(req, res) {
         var grade = fields.grade;
         var password = fields.password;
 
-        var S = new Student({
-            sid,
-            name,
-            grade,
-            password,
-        });
-        S.save();
+        //  前段验证了学号是否与数据库重复，但是后端也需要二次验证，防止有的用户修改source 中的代码进行ajax访问
+        Student.count({"sid": sid}, function(err, count) {
+            if(err) {
+                res.send({cood: -2006, msg: err});
+                return;
+            }
+            if (count === 0) { // 学号 数据库中没有重复的
+                var S = new Student({
+                    sid,
+                    name,
+                    grade,
+                    password,
+                });
+                S.save(function(err) {
+                    if(err) {
+                        res.send({cood: -2006, msg: err});
+                        return;
+                    }
+                    res.send({cood: 200, msg: 'success'});
+                });  
+            } else { 
+                res.send({cood: -2006, msg: 'fail: 学号与数据库中有冲突的'});
+            }
+        }) 
+    });
+}
 
-        
+// 检查某一个学生是否存在
+exports.checkExist = function(req, res) {
+    var sid  = parseInt(req.params.sid);
+    if(!sid) {
+        res.send({cood: -2006, msg: '请传id'});
+        return;
+    }
+    Student.count({"sid": sid}, function(err, count) {
+        if(err) {
+            res.send({cood: -2006, msg: err});
+            return;
+        }
+        res.send({cood: 200, msg: 'success', result: count});
+    })
+}
+
+
+
+// 删除学生
+exports.deleteStudent = function(req, res) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files){
+        // var arr = fields.data;
+        console.log(1111, fields);
+
+        // 传一个数组进去，可以自动删除数组中的所有
+        Student.remove({"sid": fields.arr}, function(err) {
+            if (err) {
+                res.send({cood: -2006, msg: err});
+            } else {
+                res.send({cood: 200, msg: 'success'}); 
+            }
+        })
     });
 }

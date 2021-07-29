@@ -68,14 +68,9 @@
         <p >  请输入</p>
        
         <div>
-            <form id="fileForm"
-                action="/admin/students/import" 
-                method="post" 
-                enctype="multipart/form-data" 
-            >
-                <p> <label>学号：</label> <input type="text" id="sid"> </p> 
-                <p> <label>姓名：</label> <input type="text" id="name"> </p> 
-                <p><label>年级：</label> <select name="" id="grade">
+                <p> <label>学号：</label> <input type="text" id="sid" checkvalid> </p> 
+                <p> <label>姓名：</label> <input type="text" id="name" checkvalid> </p> 
+                <p><label>年级：</label> <select name="" id="grade" checkvalid>
                     <option value="初一">初一</option>
                     <option value="初二">初二</option>
                     <option value="初三">初三</option>
@@ -83,9 +78,8 @@
                     <option value="高二">高二</option>
                     <option value="高三">高三</option>
                 </select> </p>
-                <p><label>初始密码： </label> <input type="text" id="password"></p>
-                <p><input type="submit" value="确定" class="btn-success" id="submitBTN"> </p>
-            </form>
+                <p><label>初始密码： </label> <input type="text" id="password" checkvalid></p>
+                <p><input type="button" value="确定" class="btn-success" id="submitBTN"> </p>
         </div>
      </div>
     </main>
@@ -99,7 +93,55 @@
     crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
     <script> 
+
+         // 表单验证 TODO
+
+        // 不合法
+        var invalid = {
+            'sid' : true, // true 表示不合法
+            'name': true,
+            'grade': true,
+            'password': true,
+        };
+        // 输入学号，检查数据库中是否有重复的学号
+        $("#sid").on('blur', function() {
+            var _sid = $(this).val();
+            $.ajax({
+                type: 'propfind',
+                url:"/students/" + _sid,
+                success:function(result){
+                    console.log('check', result);
+                    if (result.cood === 200 && result.result === 0) {
+                        alert("无重复的， 可以添加");
+                    } else if(result.cood === 200 && result.result !== 0) {
+                        alert("有重复的");
+                    } else {
+                        alert("error： 有错误")
+                    }
+                }
+            }); 
+        })
+
+        $("[checkvalid]").change(function() {
+            var allValid = true;
+            for(var k in invalid) {
+               if(invalid[k]) {
+                   allValid = false;
+                   break;
+               }
+            }
+            // 都合法才允许提交
+            if (allValid) {
+                // $("#submitBTN").attr("disabled", false);
+            } else {
+                // $("#submitBTN").attr("disabled", true);
+            }
+        })
+
+
         $("#submitBTN").on("click", function() {
+
+            // 表单验证有插件 jquery validate
             var sid = $('#sid').val();
             var name = $('#name').val();
             var grade = $('#grade').val();
@@ -117,9 +159,14 @@
                 data: params,
                 success:function(result){
                     console.log('add', result);
-                }}); 
+                    if (result.cood === 200) {
+                        alert("添加成功");
+                    } else {
+                        alert(result.msg);
+                    }
+                }
+            }); 
         })
-    
     </script>
   </body>
 </html>

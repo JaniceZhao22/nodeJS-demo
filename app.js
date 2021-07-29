@@ -38,6 +38,8 @@ app.get("/admin/report", adminCtrl.showAdminStudent);
 app.post("/studentsList", adminCtrl.getAllStudents); 
 app.post("/students/:sid", adminCtrl.updateStudents);
 app.post("/student/add", adminCtrl.addStudents);
+app.propfind("/students/:sid", adminCtrl.checkExist);
+app.delete("/student", adminCtrl.deleteStudent);
 
 
 // 静态资源
