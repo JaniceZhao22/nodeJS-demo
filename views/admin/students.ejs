@@ -73,11 +73,15 @@
           <input type="text" placeholder="请输入" class="search-input" autofocus>
           <button id="btn">确定</button>
        </div>
+       <div style="margin: 20px 0">
+         <button id="export">下载/导出</button>
+         <button id="delBtn">删除</button>
+
+       </div>
        <div >
         <table id="list"></table> 
         <div id="page1"></div>
 
-        <div>  <button id="delBtn">删除</button></div>
        </div>
     </div>
     </main>
@@ -177,6 +181,19 @@
     }}); 
     
   })
+
+
+    // 点击进行下载
+    document.querySelector('#export').addEventListener("click", function() {
+      // ajax请求数据
+      $.ajax({
+        type: 'get',
+        url:"/student/download",
+        success:function(result){
+          console.log(444);
+      }}); 
+    })
+
 </script>
 </body>
 </html>

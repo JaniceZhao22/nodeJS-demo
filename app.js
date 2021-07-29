@@ -40,6 +40,7 @@ app.post("/students/:sid", adminCtrl.updateStudents);
 app.post("/student/add", adminCtrl.addStudents);
 app.propfind("/students/:sid", adminCtrl.checkExist);
 app.delete("/student", adminCtrl.deleteStudent);
+app.get("/student/download", adminCtrl.downloadStudentsList);
 
 
 // 静态资源

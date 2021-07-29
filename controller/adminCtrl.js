@@ -199,9 +199,6 @@ exports.checkExist = function(req, res) {
 exports.deleteStudent = function(req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files){
-        // var arr = fields.data;
-        console.log(1111, fields);
-
         // 传一个数组进去，可以自动删除数组中的所有
         Student.remove({"sid": fields.arr}, function(err) {
             if (err) {
@@ -211,4 +208,32 @@ exports.deleteStudent = function(req, res) {
             }
         })
     });
+}
+
+// 下载功能
+exports.downloadStudentsList = function(req, res) {
+    var R = [['学号', '姓名', '年级', '密码']];
+    Student.find({}, function(err, resultes){
+        resultes.forEach(function(item) {
+          R.push([
+                item.sid,
+                item.name,
+                item.grade,
+                item.password,
+            ])
+        })
+        var buffer = xlsx.build([{name: '学生', data: R}]);
+        // 写文件 在静态资源中 新建exports文件夹 来放下载的文件
+        fs.writeFile("./public/exports/haha.xlsx", buffer, function(err) {
+            // 重定向, 让用户直接跳转到该文件
+            if (err) {
+                console.log(err);
+                res.send({cood: -2006, msg: err});
+            } else {
+                // 有点bug；
+                console.log(9999);
+                res.redirect("/exports/haha.xlsx");
+            }
+        });
+    })
 }
